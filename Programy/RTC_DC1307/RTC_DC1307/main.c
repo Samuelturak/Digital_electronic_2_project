@@ -23,6 +23,7 @@
 #include <stdlib.h>         // C library. Needed for conversion function
 #include "uart.h"           // Peter Fleury's UART library
 #include "twi.h"            // TWI library for AVR-GCC
+#include "gpio.h"
 
 /* Variables ---------------------------------------------------------*/
 typedef enum {              // FSM declaration
@@ -91,63 +92,63 @@ state = STATE_HUMID;
 break;
 
 case STATE_HUMID:
-result = twi_start((0x5c<<1) + TWI_WRITE);
+    result = twi_start((0x5c<<1) + TWI_WRITE);
 if (result == 0) {
-twi_write(0);
+    twi_write(0);
 }
-result = twi_start((0x5c<<1) + TWI_READ);
+    result = twi_start((0x5c<<1) + TWI_READ);
 if (result == 0) {
-uart_puts("Humidity: ");
-humid = twi_read_ack();
-itoa(humid, uart_string, 10);
-uart_puts(uart_string);
-uart_puts(",");
+    uart_puts("Humidity: ");
+    humid = twi_read_ack();
+    itoa(humid, uart_string, 10);
+    uart_puts(uart_string);
+    uart_puts(",");
 
-humid = twi_read_ack();
-itoa(humid, uart_string, 10);
-uart_puts(uart_string);
-uart_puts("\r\n");
+    humid = twi_read_ack();
+    itoa(humid, uart_string, 10);
+    uart_puts(uart_string);
+    uart_puts("\r\n");
 
-state = STATE_TEMP;
-}
+    state = STATE_TEMP;
+    }
 else {
 // twi_stop();
-uart_puts("Device not found.");
-uart_puts("\r\n");
-state = STATE_IDLE;
-}
+    uart_puts("Device not found.");
+    uart_puts("\r\n");
+    state = STATE_IDLE;
+    }
 break;
 
 case STATE_TEMP:
-result = twi_start((0x5c<<1) + TWI_WRITE);
+    result = twi_start((0x5c<<1) + TWI_WRITE);
 if (result == 0) {
-twi_write(2);
-}
-result = twi_start((0x5c<<1) + TWI_READ);
+    twi_write(2);
+    }
+    result = twi_start((0x5c<<1) + TWI_READ);
 if (result == 0) {
-uart_puts("Temperature: ");
-temp = twi_read_ack();
-itoa(temp, uart_string, 10);
-uart_puts(uart_string);
-uart_puts(",");
+    uart_puts("Temperature: ");
+    temp = twi_read_ack();
+    itoa(temp, uart_string, 10);
+    uart_puts(uart_string);
+    uart_puts(",");
 
-temp = twi_read_nack();
-itoa(temp, uart_string, 10);
-uart_puts(uart_string);
-uart_puts("\r\n");
+    temp = twi_read_nack();
+    itoa(temp, uart_string, 10);
+    uart_puts(uart_string);
+    uart_puts("\r\n");
 
-state = STATE_IDLE;
-}
+    state = STATE_IDLE;
+    }
 else {
 // twi_stop();
-uart_puts("Device not found.");
-uart_puts("\r\n");
-state = STATE_IDLE;
-}
+    uart_puts("Device not found.");
+    uart_puts("\r\n");
+    state = STATE_IDLE;
+    }
 break;
 
 default:
-state = STATE_IDLE;
+    state = STATE_IDLE;
 break;
 }
 /*

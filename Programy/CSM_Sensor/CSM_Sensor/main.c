@@ -53,7 +53,7 @@ int main(void)
 
 ISR(TIMER1_OVF_vect) {
 	static uint8_t humid = 0;
-	char uart_str[4] = "";
+	char uart_str[3] = "000";
 	
 	humid = GPIO_read(&PINC, SENSOR_OUT);
 	itoa(humid, uart_str, 10);
