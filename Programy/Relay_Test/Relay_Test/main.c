@@ -1,12 +1,14 @@
 /*
- * CSM_Sensor.c
+ * Relay_Test.c
  *
- * Created: 30. 11. 2021 13:27:56
+ * Created: 30. 11. 2021
  * Author : xsedla1n
  */ 
 
 /* Defines -----------------------------------------------------------*/
-#define SENSOR_PIN PC0
+#define RELAY_PIN2 PB1 // Arduino PIN ~9
+#define RELAY_PIN1 PB0 // Arduino PIN 8
+#define BUTTON_PIN PD5 // Arduino PIN 5
 
 #ifndef F_CPU
 # define F_CPU 16000000  // CPU frequency in Hz required for UART_BAUD_SELECT
@@ -20,30 +22,22 @@
 #include "uart.h"           // Peter Fleury's UART library
 #include "timer.h"          // Timer library for AVR-GCC
 
-
 int main(void)
 {
 	// Initialize UART to asynchronous, 8N1, 9600
 	uart_init(UART_BAUD_SELECT(9600, F_CPU));
 	
-	// Configure ADC to convert PC0[A0] analog value
-    // Set ADC reference to AVcc
-	ADMUX |= (1<<REFS0); ADMUX &= ~(1<<REFS1); 
-
-    // Set input channel to ADC0
-	ADMUX &= ~(1<<MUX0); ADMUX &= ~(1<<MUX1); ADMUX &= ~(1<<MUX2); ADMUX &= ~(1<<MUX3); 
+	// Configure output PINs
+	GPIO_config_output(&DDRB, RELAY_PIN1);
+	// GPIO_config_output(&DDRB, RELAY_PIN2);
+	GPIO_write_high(&PORTB, RELAY_PIN1);
+	// GPIO_write_low(&PORTB, RELAY_PIN2);
 	
-    // Enable ADC module
-	ADCSRA |= (1<<ADEN);
-
-    // Enable conversion complete interrupt
-	ADCSRA |= (1<<ADIE);
-
-    // Set clock prescaler to 128
-	ADCSRA |= (1<<ADPS0); ADCSRA |= (1<<ADPS1); ADCSRA |= (1<<ADPS2);
+	// Configure input PIN
+	GPIO_config_input_pullup(&DDRD, BUTTON_PIN);
 	
 	// Input start string
-	uart_puts("Soil moisture:\r\n");
+	uart_puts("RELAY STATUS:\r\n");
 	
     // Configure 16-bit Timer/Counter1 to update FSM
     // Set prescaler to 33 ms and enable interrupt
@@ -65,21 +59,16 @@ int main(void)
 }
 
 ISR(TIMER1_OVF_vect) {
-	
-	// Start ADC conversion
-	ADCSRA |= (1<<ADSC);
-	
-}
-
-ISR(ADC_vect)
-{
-	static uint8_t air_val = 920;
-	static uint8_t water_val = 760;
-	static uint16_t value = 0;
-	char uart_str[3] = "";
-	
-	value = ADC;
-	itoa(value, uart_str, 10);
-	uart_puts(uart_str);
-	uart_puts("\r\n");
+	if (GPIO_read(&PIND, BUTTON_PIN) == 0) {
+		uart_puts("Relay_1: ON; Relay_2: ON");
+		uart_puts("\r\n");
+		GPIO_write_low(&PORTB, RELAY_PIN1);
+		// GPIO_write_high(&PORTB, RELAY_PIN2);
+	}
+	else {
+		uart_puts("Relay_1: ON;	Relay_2: ON");
+		uart_puts("\r\n");
+		GPIO_write_high(&PORTB, RELAY_PIN1);
+		// GPIO_write_low(&PORTB, RELAY_PIN2);
+	}
 }
