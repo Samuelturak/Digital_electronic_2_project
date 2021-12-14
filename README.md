@@ -4,4 +4,4 @@ we love DE2
 
 ## Fess dobrá schéma
 
-![your figure](Images/scheme.jpg)
+![your figure](Images/schéma.png)
