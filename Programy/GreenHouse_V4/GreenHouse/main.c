@@ -228,12 +228,12 @@ ISR(TIMER1_OVF_vect)
 		err = twi_start((0x5c<<1) + TWI_READ);
 		if (err == 0) {
 			// Create a temperature string
-			// Get first part of the temperature information
+			// Get first part of the temperature information (integer part)
 			temperature = twi_read_ack();
-			itoa(temperature, temperature1, 10);
-			// Get second part of the temperature information
+			itoa(temperature, temperature1, 10);		// convert integer temperature to decimal values
+			// Get second part of the temperature information (fractional part)
 			temperature = twi_read_nack();
-			itoa(temperature, temperature2, 10);
+			itoa(temperature, temperature2, 10);		// convert fractional temperature to decimal values
 			
 			// Display temperature via UART
 			// uart_puts("Temperature: ");
@@ -261,14 +261,14 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_TOGGLE_VENT:
-		if (temperature > 28) {
-			GPIO_write_high(&PORTD, VENT_PIN);
-			uart_puts("Ventilation ON\r\n");
+		if (temperature > 28) {					// after 28°C turn on the ventilator
+			GPIO_write_high(&PORTD, VENT_PIN);	
+			uart_puts("Ventilation ON\r\n");	
 		}
 		else {
 			GPIO_write_low(&PORTD, VENT_PIN);
 		}
-		state = STATE_TOGGLE_SPRNKL;
+		state = STATE_TOGGLE_SPRNKL;			
 		break;
 		
 	case STATE_GET_MOIST:
@@ -276,14 +276,13 @@ ISR(TIMER1_OVF_vect)
 
 		// Get moisture value in %
 		if (raw_value > air_val) {
-			raw_value = air_val;		// 960
+			raw_value = air_val;		// 960 is the lowest moisture value from the device
 		}
 		else if (raw_value < water_val) {
-			raw_value = water_val;		// 720
+			raw_value = water_val;		// 720 is the highest moisture value from the device
 		}
 		
-		// raw_value = round((100/(float)(air_val-water_val)) * (raw_value-water_val)); // PREROBIT
-		raw_value = round(100 * (1 - (float)(raw_value-water_val)/(float)(air_val-water_val)));
+		raw_value = round(100 * (1 - (float)(raw_value-water_val)/(float)(air_val-water_val))); // getting moisture percentage value
 		itoa(raw_value, temp_str, 10);
 		adc_moist = raw_value;
 		
@@ -291,7 +290,7 @@ ISR(TIMER1_OVF_vect)
 		uart_puts(temp_str);
 		uart_puts("\r\n");
 		
-		// Update the LCD
+		// Update the moisture value on LCD
 		lcd_gotoxy(1, 1);
 		lcd_puts("   ");
 		lcd_gotoxy(1, 1);
@@ -302,7 +301,7 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_TOGGLE_SPRNKL:
-		if (adc_moist < 80) {
+		if (adc_moist < 80) {			// start watering when soil moisture is below 80 %
 			GPIO_write_high(&PORTD, SPRNKL_PIN);
 			uart_puts("Water ON\r\n");
 		}
@@ -324,9 +323,9 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts("00:00:00");
 		
 			seconds = twi_read_ack();
-			seconds_1 = (seconds & 0b00001111);			// getting first digit of seconds
+			seconds_1 = (seconds & 0b00001111);				// getting first digit of seconds
 			seconds_2 = ((seconds >> 4) & 0b00000111);		// getting second digit of seconds
-			itoa(seconds_1, lcd_string, 10);
+			itoa(seconds_1, lcd_string, 10);				// converting to decimal values
 			lcd_gotoxy(7, 0);
 			lcd_puts(lcd_string);
 			itoa(seconds_2, lcd_string, 10);
@@ -334,9 +333,9 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts(lcd_string);
 		
 			minutes = twi_read_ack();
-			minutes_1 = minutes & 0b00001111;
-			minutes_2 = minutes >> 4 & 0b00000111;
-			itoa(minutes_1, lcd_string, 10);
+			minutes_1 = minutes & 0b00001111;				// getting first digit of minutes
+			minutes_2 = minutes >> 4 & 0b00000111;			// getting second digit of minutes
+			itoa(minutes_1, lcd_string, 10);				// converting to decimal values
 			lcd_gotoxy(4, 0);
 			lcd_puts(lcd_string);
 			itoa(minutes_2, lcd_string, 10);
@@ -344,9 +343,9 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts(lcd_string);
 		
 			hours = twi_read_ack();
-			hours_1 = hours & 0b00001111;
-			hours_2 = hours >> 4 & 0b00000011;
-			itoa(hours_1, lcd_string, 10);
+			hours_1 = hours & 0b00001111;					// getting first digit of hours
+			hours_2 = hours >> 4 & 0b00000011;				// getting second digit of hours
+			itoa(hours_1, lcd_string, 10);					// converting to decimal values
 			lcd_gotoxy(1, 0);
 			lcd_puts(lcd_string);
 			itoa(hours_2, lcd_string, 10);
@@ -390,7 +389,7 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_TOGGLE_BULB:
-		if (adc_light < 60) {
+		if (adc_light < 60) {			// toggle light 
 			GPIO_write_high(&PORTB, BULB_PIN);
 			uart_puts("Light ON\r\n");
 		}
