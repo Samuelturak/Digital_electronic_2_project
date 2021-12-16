@@ -86,4 +86,4 @@ Write your text here
 ## References
 
 * [DE2 laboratory](https://github.com/tomas-fryza/Digital-electronics-2/tree/master/Labs)
-* [arduino shield](https://github.com/tomas-fryza/Digital-electronics-2/blob/master/Docs/arduino_shield.pdf)
+* [Arduino uno schematic](https://github.com/tomas-fryza/Digital-electronics-2/blob/master/Docs/arduino_shield.pdf)
