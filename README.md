@@ -53,7 +53,11 @@ The objective of this project was to create a greenhouse monitoring and control 
 
 <a name="libs"></a>
 
-Every hardware part is described in the documentation folder in detail. 
+* HD44780-based LCD to display information.
+
+<a name="libs"></a>
+
+Every hardware part is described in the documentation folder in detail, excluding LCD. 
 
 ## Libraries description
 
@@ -87,3 +91,4 @@ Every hardware part is described in the documentation folder in detail.
 
 * [DE2 laboratory](https://github.com/tomas-fryza/Digital-electronics-2/tree/master/Labs)
 * [Arduino uno schematic](https://github.com/tomas-fryza/Digital-electronics-2/blob/master/Docs/arduino_shield.pdf)
+* [LCD documentation](https://www.sparkfun.com/datasheets/LCD/HD44780.pdf)
