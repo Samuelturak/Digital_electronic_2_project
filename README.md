@@ -1,8 +1,5 @@
 # Digital_electronic_2_project
 
-##Scheme:
-
-![your figure](Images/schéma.png)
 
 # YOUR_PROJECT_TITLE
 
@@ -64,7 +61,13 @@ Write your text here.
 
 ## Main application
 
-Write your text here.
+### Scheme:
+
+![your figure](Images/schéma.png)
+
+### Finite State Machine:
+
+![your figure](Images/state machine.PNG)
 
 <a name="video"></a>
 
