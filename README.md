@@ -79,7 +79,7 @@ Every hardware part is described in the documentation folder in detail.
 
 ## Video
 
-Write your text here
+[![Watch the video](https://img.youtube.com/vi/yfbbUYZdizQ/maxresdefault.jpg)](https://youtu.be/yfbbUYZdizQ)
 
 <a name="references"></a>
 
