@@ -10,7 +10,7 @@
 * Marek Sedláček `ID:221068` (responsible for Scheme visualisation, Documentation)
 * Samuel Turák `ID:221059` (responsible for programming)
 
-Link to this file in your GitHub repository:
+Link to this file in GitHub repository:
 
 https://github.com/Samuelturak/Digital_electronic_2_project
 
