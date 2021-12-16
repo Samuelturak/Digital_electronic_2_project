@@ -206,9 +206,9 @@ ISR(TIMER1_OVF_vect)
 	 * STATE_IDLE: Add counter 
 	 * STATE_GET_TEMP: Measures temperature and updates LCD display.
 	 * STATE_STATE_GET_MOIST: Measures soil humidity and updates LCD display.
-	 * STATE_STATE_GET_TIME: Takes time from clock and display's it on LCD.
+	 * STATE_STATE_GET_TIME: Takes time from clock and displays it on LCD.
 	 * STATE_GET_LIGHT: Measures luminance and updates it on LCD display.
-	 * STATE_TOGGLE_BULB: Turns on lights if requirements are met.
+	 * STATE_TOGGLE_BULB: Turns on lights when it's too dark.
 	 * STATE_TOGGLE_SPRNKL: Turns on watering when the soil moisture is too low.
 	 * STATE_TOGGLE_VENT: Turn on ventilator when temperature is too high.
 	 **********************************************************************/
@@ -340,6 +340,7 @@ ISR(TIMER1_OVF_vect)
 			seconds_1 = (seconds & 0b00001111);				// getting first digit of seconds
 			seconds_2 = ((seconds >> 4) & 0b00000111);		// getting second digit of seconds
 			itoa(seconds_1, lcd_string, 10);				// converting to decimal values
+			// Update seconds on LCD
 			lcd_gotoxy(7, 0);
 			lcd_puts(lcd_string);
 			itoa(seconds_2, lcd_string, 10);
@@ -350,6 +351,7 @@ ISR(TIMER1_OVF_vect)
 			minutes_1 = minutes & 0b00001111;				// getting first digit of minutes
 			minutes_2 = minutes >> 4 & 0b00000111;			// getting second digit of minutes
 			itoa(minutes_1, lcd_string, 10);				// converting to decimal values
+			// Update minutes on LCD
 			lcd_gotoxy(4, 0);
 			lcd_puts(lcd_string);
 			itoa(minutes_2, lcd_string, 10);
@@ -360,6 +362,7 @@ ISR(TIMER1_OVF_vect)
 			hours_1 = hours & 0b00001111;					// getting first digit of hours
 			hours_2 = hours >> 4 & 0b00000011;				// getting second digit of hours
 			itoa(hours_1, lcd_string, 10);					// converting to decimal values
+			// Update hours on LCD
 			lcd_gotoxy(1, 0);
 			lcd_puts(lcd_string);
 			itoa(hours_2, lcd_string, 10);

@@ -8,7 +8,7 @@
 * David Sedláček (responsible for programming)
 * David Sladkowski (responsible for FSM visualisation, Documentation)
 * Marek Sedláček (responsible for Scheme visualisation, Documentation)
-* Samuel Turák (responsible for programming)
+* Samuel Turák `ID: 221059` (responsible for programming)
 
 Link to this file in your GitHub repository:
 
