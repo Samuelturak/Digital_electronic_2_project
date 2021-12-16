@@ -87,8 +87,8 @@ int main(void)
     twi_init();
 
 	// Initialize RTC time
-	if (twi_start((0x68<<1) + TWI_WRITE) == 0) {	// device is accessible
-		twi_write(0x00);							// sending message to slave
+	if (twi_start((0x68<<1) + TWI_WRITE) == 0) {	// Device is accessible
+		twi_write(0x00);							// Sending message to slave
 		twi_write(0b00000000);
 		twi_write(0b01000101);
 		twi_write(0b00000010);
@@ -154,7 +154,7 @@ unsigned int readADC0()
 	ADMUX |= (1<<REFS0); ADMUX &= ~(1<<REFS1);	// Set ADC reference to AVcc
 	ADMUX &= ~(1<<MUX0); ADMUX &= ~(1<<MUX1); ADMUX &= ~(1<<MUX2); ADMUX &= ~(1<<MUX3); // Set input channel to ADC0
 	ADMUX |= (0 << ADLAR);
-	ADCSRA |= (1 << ADSC);
+	ADCSRA |= (1 << ADSC); // Start conversion
 	while (ADCSRA & (1 << ADSC));
 	return ADC;
 }
@@ -164,7 +164,7 @@ unsigned int readADC1()
 	ADMUX |= (1<<REFS0); ADMUX &= ~(1<<REFS1);	// Set ADC reference to AVcc
 	ADMUX |= (1<<MUX0); ADMUX &= ~(1<<MUX1); ADMUX &= ~(1<<MUX2); ADMUX &= ~(1<<MUX3); // Set input channel to ADC1
 	ADMUX |= (0 << ADLAR);
-	ADCSRA |= (1 << ADSC);
+	ADCSRA |= (1 << ADSC); // Start conversion
 	while (ADCSRA & (1 << ADSC));
 	return ADC;
 }
@@ -183,20 +183,20 @@ ISR(TIMER1_OVF_vect)
 	
 	// RTC DS1307 variables
 	static uint8_t seconds = 0;
-	static uint8_t seconds_1 = 0;	// first digit of seconds
-	static uint8_t seconds_2 = 0;	// second digit of seconds
+	static uint8_t seconds_1 = 0;	// First digit of seconds
+	static uint8_t seconds_2 = 0;	// Second digit of seconds
 	static uint8_t minutes = 0;
-	static uint8_t minutes_1 = 0;	// first digit of minutes
-	static uint8_t minutes_2 = 0;	// second digit of minutes
+	static uint8_t minutes_1 = 0;	// First digit of minutes
+	static uint8_t minutes_2 = 0;	// Second digit of minutes
 	static uint8_t hours = 0;
-	static uint8_t hours_1 = 0;		// first digit of hours
-	static uint8_t hours_2 = 0;		// second digit of hours
+	static uint8_t hours_1 = 0;		// First digit of hours
+	static uint8_t hours_2 = 0;		// Second digit of hours
 	char lcd_string[8] = " ";      // String for converting numbers by itoa()
 	
 	// ADC variables
-	uint16_t air_val = 920;	// Needs to be calibrated with each new device
-	uint16_t water_val = 760;	// Needs to be calibrated
-	uint16_t day_val = 100;	// Needs to be calibrated with every 
+	uint16_t air_val = 920;	// Needs to be calibrated with each device
+	uint16_t water_val = 760;	// Needs to be calibrated with each device
+	uint16_t day_val = 100;	// Needs to be calibrated with each device
 	static uint16_t raw_value = 0;
 	char temp_str[3] = "";
 	
@@ -229,25 +229,25 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_GET_TEMP:
-		err = twi_start((0x5c<<1) + TWI_WRITE);	// send adress byte to slave device
+		err = twi_start((0x5c<<1) + TWI_WRITE);	// Send address byte to slave device
 		if (err == 0) {
-			twi_write(0x2); // sending the data frame
+			twi_write(0x2); // Sending the data
 		}
 		else {
 			// Debug check
 			uart_puts("Device not found.\r\n"); 
 		}
 				
-		err = twi_start((0x5c<<1) + TWI_READ); // send adress byte to master
+		err = twi_start((0x5c<<1) + TWI_READ); // Send address byte to master
 		if (err == 0) {
 			// Create a temperature string
 			// Get first part of the temperature information (integer part)
 			temperature = twi_read_ack();	   // 
-			itoa(temperature, temperature1, 10);		// convert integer temperature to decimal values
+			itoa(temperature, temperature1, 10);		// Convert integer temperature to decimal values
 			
 			// Get second part of the temperature information (fractional part)
 			temperature = twi_read_nack();
-			itoa(temperature, temperature2, 10);		// convert fractional temperature to decimal values
+			itoa(temperature, temperature2, 10);		// Convert fractional temperature to decimal values
 			
 			// Display temperature via UART
 			// uart_puts("Temperature: ");
@@ -265,24 +265,27 @@ ISR(TIMER1_OVF_vect)
 			lcd_putc(0xdf);
 			lcd_putc('C');
 			
-			// Continue to another state
+			// Get integer from a string
 			temperature = atoi(temperature1);
 		}
 		else {
+			// Debug check
 			// uart_puts("Temperature unavailable.\r\n");
 		}
+		
 		state = STATE_GET_MOIST;
 		break;
 		
 	case STATE_TOGGLE_VENT:
-		if (temperature > 28) {					// after 28°C turn on the ventilator
-			GPIO_write_high(&PORTD, VENT_PIN);	// ventilator on
-			// uart debug check
+		if (temperature > 28) {					// After 28°C turn on the ventilator
+			GPIO_write_high(&PORTD, VENT_PIN);	// Ventilator ON
+			// Debug check
 			uart_puts("Ventilation ON\r\n");	
 		}
 		else {
-			GPIO_write_low(&PORTD, VENT_PIN);	// ventilator off
+			GPIO_write_low(&PORTD, VENT_PIN);	// Ventilator OFF
 		}
+		
 		state = STATE_TOGGLE_SPRNKL;			
 		break;
 		
@@ -297,11 +300,11 @@ ISR(TIMER1_OVF_vect)
 			raw_value = water_val;		// 720 is the highest moisture value from the device
 		}
 		
-		raw_value = round(100 * (1 - (float)(raw_value-water_val)/(float)(air_val-water_val))); // getting moisture percentage value
+		raw_value = round(100 * (1 - (float)(raw_value-water_val)/(float)(air_val-water_val))); // Getting moisture percentage value
 		itoa(raw_value, temp_str, 10);
 		adc_moist = raw_value;
 		
-		// uart check for debugging
+		// Debug check
 		uart_puts("Moisture value: ");
 		uart_puts(temp_str);
 		uart_puts("\r\n");
@@ -313,36 +316,38 @@ ISR(TIMER1_OVF_vect)
 		lcd_puts(temp_str);
 		lcd_gotoxy(4, 1);
 		lcd_puts("%");
+		
 		state = STATE_GET_TIME;
 		break;
 		
 	case STATE_TOGGLE_SPRNKL:
-		if (adc_moist < 80) {			// start watering when soil moisture is below 80 %
-			GPIO_write_high(&PORTD, SPRNKL_PIN);	// watering on
-			// uart debug check
+		if (adc_moist < 80) {			// Start watering when soil moisture is below 80 %
+			GPIO_write_high(&PORTD, SPRNKL_PIN);	// Watering ON
+			// Debug check
 			uart_puts("Water ON\r\n");
 		}
 		else {
-			GPIO_write_low(&PORTD, SPRNKL_PIN);		// watering off
+			GPIO_write_low(&PORTD, SPRNKL_PIN);		// Watering OFF
 		}
 		state = STATE_IDLE;
 		break;
 	
 	case STATE_GET_TIME:
-		err = twi_start((0x68<<1) + TWI_WRITE);		// starting communication with slave
-		if (err == 0){								// device is accessible
-			twi_write(0x00);						// sending message to slave
+		err = twi_start((0x68<<1) + TWI_WRITE);		// Starting communication with slave
+		if (err == 0){								// Device is accessible
+			twi_write(0x00);						// Sending message to slave
 		}
 	
-		err = twi_start((0x68<<1) + TWI_READ);		// starting communication with master
+		err = twi_start((0x68<<1) + TWI_READ);		// Starting communication with master
 		if (err == 0){
 			lcd_gotoxy(0, 0);
 			lcd_puts("00:00:00");
 		
 			seconds = twi_read_ack();
-			seconds_1 = (seconds & 0b00001111);				// getting first digit of seconds
-			seconds_2 = ((seconds >> 4) & 0b00000111);		// getting second digit of seconds
-			itoa(seconds_1, lcd_string, 10);				// converting to decimal values
+			seconds_1 = (seconds & 0b00001111);				// Getting first digit of seconds
+			seconds_2 = ((seconds >> 4) & 0b00000111);		// Getting second digit of seconds
+			itoa(seconds_1, lcd_string, 10);				// Converting to decimal values
+			
 			// Update seconds on LCD
 			lcd_gotoxy(7, 0);
 			lcd_puts(lcd_string);
@@ -351,9 +356,10 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts(lcd_string);
 		
 			minutes = twi_read_ack();
-			minutes_1 = minutes & 0b00001111;				// getting first digit of minutes
-			minutes_2 = minutes >> 4 & 0b00000111;			// getting second digit of minutes
-			itoa(minutes_1, lcd_string, 10);				// converting to decimal values
+			minutes_1 = minutes & 0b00001111;				// Getting first digit of minutes
+			minutes_2 = minutes >> 4 & 0b00000111;			// Getting second digit of minutes
+			itoa(minutes_1, lcd_string, 10);				// Converting to decimal values
+			
 			// Update minutes on LCD
 			lcd_gotoxy(4, 0);
 			lcd_puts(lcd_string);
@@ -362,9 +368,10 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts(lcd_string);
 		
 			hours = twi_read_ack();
-			hours_1 = hours & 0b00001111;					// getting first digit of hours
-			hours_2 = hours >> 4 & 0b00000011;				// getting second digit of hours
-			itoa(hours_1, lcd_string, 10);					// converting to decimal values
+			hours_1 = hours & 0b00001111;					// Getting first digit of hours
+			hours_2 = hours >> 4 & 0b00000011;				// Getting second digit of hours
+			itoa(hours_1, lcd_string, 10);					// Converting to decimal values
+			
 			// Update hours on LCD
 			lcd_gotoxy(1, 0);
 			lcd_puts(lcd_string);
@@ -373,6 +380,7 @@ ISR(TIMER1_OVF_vect)
 			lcd_puts(lcd_string);
 		}
 		else {
+			// Debug check
 			uart_puts("Device not found.\r\n");
 		}
 		
@@ -393,7 +401,7 @@ ISR(TIMER1_OVF_vect)
 		
 		itoa(raw_value, temp_str, 10);
 		adc_light = raw_value;
-		// uart debug check
+		// Debug check
 		uart_puts("Light value: ");
 		uart_puts(temp_str);
 		uart_puts("\r\n");
@@ -408,20 +416,14 @@ ISR(TIMER1_OVF_vect)
 		state = STATE_TOGGLE_BULB;
 		break;
 		
-	/**********************************************************************
- * Purpose:  turn light on
- * Input:    reg_name - Address of Data Direction Register, such as &DDRB
- *           pin_num - Pin designation in the interval 0 to 7
- * Returns:  none
- **********************************************************************/
 	case STATE_TOGGLE_BULB:
 		if (adc_light < 60) {			
-			GPIO_write_high(&PORTB, BULB_PIN); // turn lights on
-			// uart debug check
+			GPIO_write_high(&PORTB, BULB_PIN); // Turn lights ON
+			// Debug check
 			uart_puts("Light ON\r\n");
 		}
 		else {
-			GPIO_write_low(&PORTB, BULB_PIN); // turn lights off
+			GPIO_write_low(&PORTB, BULB_PIN); // Turn lights OFF
 		}
 		state = STATE_TOGGLE_VENT;
 		break;
