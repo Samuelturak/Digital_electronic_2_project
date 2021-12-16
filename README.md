@@ -57,7 +57,11 @@ Every hardware part is described in the documentation folder.
 
 ## Libraries description
 
-*Write your text here.
+* GPIO library: Contains functions for controlling AVR's gpio pin's.
+* LCD library: Basic routines for interfacing a HD44780U-based character LCD display. This library allows easy interfacing with a HD44780 compatible display
+* Uart library: This library is used to transmit and receive data through the built in UART.
+* TWI library: This library defines functions for the TWI (I2C) communication between AVR and slave device's.
+* Time library: This library contains macros for controlling the timer modules.
 
 <a name="main"></a>
 

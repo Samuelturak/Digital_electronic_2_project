@@ -194,14 +194,26 @@ ISR(TIMER1_OVF_vect)
 	char lcd_string[8] = " ";      // String for converting numbers by itoa()
 	
 	// ADC variables
-	uint16_t air_val = 920;	// Needs to be calibrated
+	uint16_t air_val = 920;	// Needs to be calibrated with each new device
 	uint16_t water_val = 760;	// Needs to be calibrated
-	uint16_t day_val = 100;	// Needs to be calibrated
+	uint16_t day_val = 100;	// Needs to be calibrated with every 
 	static uint16_t raw_value = 0;
 	char temp_str[3] = "";
 	
+	/**********************************************************************
+	 * Switch statement
+	 * Purpose: Functions as a state machine. FSM has 8 states in total. 
+	 * STATE_IDLE: Add counter 
+	 * STATE_GET_TEMP: Measures temperature and updates LCD display.
+	 * STATE_STATE_GET_MOIST: Measures soil humidity and updates LCD display.
+	 * STATE_STATE_GET_TIME: Takes time from clock and display's it on LCD.
+	 * STATE_GET_LIGHT: Measures luminance and updates it on LCD display.
+	 * STATE_TOGGLE_BULB: Turns on lights if requirements are met.
+	 * STATE_TOGGLE_SPRNKL: Turns on watering when the soil moisture is too low.
+	 * STATE_TOGGLE_VENT: Turn on ventilator when temperature is too high.
+	 **********************************************************************/
 	switch(state) {
-		
+	
 	case STATE_IDLE:
 		if (counter >= 455) { // 33ms x 455 = 15s (approx.)
 			counter = 0;
@@ -222,7 +234,8 @@ ISR(TIMER1_OVF_vect)
 			twi_write(0x2);
 		}
 		else {
-			uart_puts("Device not found.\r\n");
+			// Debug check
+			uart_puts("Device not found.\r\n"); 
 		}
 				
 		err = twi_start((0x5c<<1) + TWI_READ);
@@ -231,6 +244,7 @@ ISR(TIMER1_OVF_vect)
 			// Get first part of the temperature information (integer part)
 			temperature = twi_read_ack();
 			itoa(temperature, temperature1, 10);		// convert integer temperature to decimal values
+			
 			// Get second part of the temperature information (fractional part)
 			temperature = twi_read_nack();
 			itoa(temperature, temperature2, 10);		// convert fractional temperature to decimal values
@@ -388,8 +402,14 @@ ISR(TIMER1_OVF_vect)
 		state = STATE_TOGGLE_BULB;
 		break;
 		
+	/**********************************************************************
+ * Purpose:  turn light on
+ * Input:    reg_name - Address of Data Direction Register, such as &DDRB
+ *           pin_num - Pin designation in the interval 0 to 7
+ * Returns:  none
+ **********************************************************************/
 	case STATE_TOGGLE_BULB:
-		if (adc_light < 60) {			// toggle light 
+		if (adc_light < 60) {			
 			GPIO_write_high(&PORTB, BULB_PIN);
 			uart_puts("Light ON\r\n");
 		}
