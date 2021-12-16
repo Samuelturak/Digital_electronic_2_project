@@ -229,20 +229,20 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_GET_TEMP:
-		err = twi_start((0x5c<<1) + TWI_WRITE);	// send adress frame to slave device
+		err = twi_start((0x5c<<1) + TWI_WRITE);	// send adress byte to slave device
 		if (err == 0) {
-			twi_write(0x2);
+			twi_write(0x2); // sending the data frame
 		}
 		else {
 			// Debug check
 			uart_puts("Device not found.\r\n"); 
 		}
 				
-		err = twi_start((0x5c<<1) + TWI_READ);
+		err = twi_start((0x5c<<1) + TWI_READ); // send adress byte to master
 		if (err == 0) {
 			// Create a temperature string
 			// Get first part of the temperature information (integer part)
-			temperature = twi_read_ack();
+			temperature = twi_read_ack();	   // 
 			itoa(temperature, temperature1, 10);		// convert integer temperature to decimal values
 			
 			// Get second part of the temperature information (fractional part)
@@ -276,11 +276,12 @@ ISR(TIMER1_OVF_vect)
 		
 	case STATE_TOGGLE_VENT:
 		if (temperature > 28) {					// after 28°C turn on the ventilator
-			GPIO_write_high(&PORTD, VENT_PIN);	
+			GPIO_write_high(&PORTD, VENT_PIN);	// ventilator on
+			// uart debug check
 			uart_puts("Ventilation ON\r\n");	
 		}
 		else {
-			GPIO_write_low(&PORTD, VENT_PIN);
+			GPIO_write_low(&PORTD, VENT_PIN);	// ventilator off
 		}
 		state = STATE_TOGGLE_SPRNKL;			
 		break;
@@ -317,11 +318,12 @@ ISR(TIMER1_OVF_vect)
 		
 	case STATE_TOGGLE_SPRNKL:
 		if (adc_moist < 80) {			// start watering when soil moisture is below 80 %
-			GPIO_write_high(&PORTD, SPRNKL_PIN);
+			GPIO_write_high(&PORTD, SPRNKL_PIN);	// watering on
+			// uart debug check
 			uart_puts("Water ON\r\n");
 		}
 		else {
-			GPIO_write_low(&PORTD, SPRNKL_PIN);
+			GPIO_write_low(&PORTD, SPRNKL_PIN);		// watering off
 		}
 		state = STATE_IDLE;
 		break;
@@ -391,7 +393,7 @@ ISR(TIMER1_OVF_vect)
 		
 		itoa(raw_value, temp_str, 10);
 		adc_light = raw_value;
-		
+		// uart debug check
 		uart_puts("Light value: ");
 		uart_puts(temp_str);
 		uart_puts("\r\n");
@@ -414,11 +416,12 @@ ISR(TIMER1_OVF_vect)
  **********************************************************************/
 	case STATE_TOGGLE_BULB:
 		if (adc_light < 60) {			
-			GPIO_write_high(&PORTB, BULB_PIN);
+			GPIO_write_high(&PORTB, BULB_PIN); // turn lights on
+			// uart debug check
 			uart_puts("Light ON\r\n");
 		}
 		else {
-			GPIO_write_low(&PORTB, BULB_PIN);
+			GPIO_write_low(&PORTB, BULB_PIN); // turn lights off
 		}
 		state = STATE_TOGGLE_VENT;
 		break;
