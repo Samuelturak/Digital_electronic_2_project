@@ -53,7 +53,7 @@ The objective of this project was to create a greenhouse monitoring and control 
 
 <a name="libs"></a>
 
-Every hardware part is described in the documentation folder. 
+Every hardware part is described in the documentation folder in detail. 
 
 ## Libraries description
 
