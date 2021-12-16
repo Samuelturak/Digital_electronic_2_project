@@ -73,7 +73,7 @@ Every hardware part is described in the documentation folder in detail.
 
 ### Finite State Machine:
 
-![your figure](Images/state_machine.png)
+![your figure](Images/state_machine.PNG)
 
 <a name="video"></a>
 
