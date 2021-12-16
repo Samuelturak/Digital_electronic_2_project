@@ -6,7 +6,7 @@
 ### Team members
 
 * David Sedláček (responsible for programming)
-* David Sladkowski (responsible for FSM visualisation, Documentation)
+* David Sladkowski `ID: 221043` (responsible for FSM visualisation, Documentation)
 * Marek Sedláček (responsible for Scheme visualisation, Documentation)
 * Samuel Turák `ID: 221059` (responsible for programming)
 
