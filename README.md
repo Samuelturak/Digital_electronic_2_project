@@ -33,27 +33,27 @@ The objective of this project was to create a greenhouse monitoring and control 
 
 ## Hardware description
 
-*DHT12 sensor for air temperature measurement.
+* DHT12 sensor for air temperature measurement.
 
 <a name="hardware"></a>
 
-*Fotoresistor GL5539 for luminance measurement.
+* Fotoresistor GL5539 for luminance measurement.
 
 <a name="hardware"></a>
 
-*Capacity soil moisture sensor 1.2. to measure soil humidity.
+* Capacity soil moisture sensor 1.2. to measure soil humidity.
 
 <a name="hardware"></a>
 
-*Relays to turn on ventilator, sprinkler system and lighting.
+* Relays to turn on ventilator, sprinkler system and lighting.
 
 <a name="hardware"></a>
 
-*Real time clock DS 1307 for time tracking.
+* Real time clock DS 1307 for time tracking.
 
 <a name="libs"></a>
 
-*Every hardware part is described in the documentation folder. 
+Every hardware part is described in the documentation folder. 
 
 ## Libraries description
 
