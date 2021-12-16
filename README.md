@@ -1,8 +1,6 @@
 # Digital_electronic_2_project
-xD
-we love DE2
 
-## Fess dobrá schéma
+Scheme:
 
 ![your figure](Images/schéma.png)
 
@@ -10,14 +8,14 @@ we love DE2
 
 ### Team members
 
-* Member 1 (responsible for xxx)
-* Member 2 (responsible for xxx)
-* Member 3 (responsible for xxx)
-* ...
+* David Sedláček (responsible for xxx)
+* David Sladkowski (responsible for xxx)
+* Marek Sedláček (responsible for xxx)
+* Samuel Turák
 
 Link to this file in your GitHub repository:
 
-[https://github.com/your-github-account/repository-name/project](https://github.com/...)
+https://github.com/Samuelturak/Digital_electronic_2_project
 
 ### Table of contents
 
