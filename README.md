@@ -1,14 +1,14 @@
 # Digital_electronic_2_project
 
 
-# YOUR_PROJECT_TITLE
+# Greenhouse monitoring and control system
 
 ### Team members
 
 * David Sedláček (responsible for xxx)
 * David Sladkowski (responsible for xxx)
 * Marek Sedláček (responsible for xxx)
-* Samuel Turák
+* Samuel Turák (responsible for xxx)
 
 Link to this file in your GitHub repository:
 
@@ -27,7 +27,7 @@ https://github.com/Samuelturak/Digital_electronic_2_project
 
 ## Project objectives
 
-The objective of this project was to create a greenhouse monitoring and control system.
+The objective of this project was to create a greenhouse monitoring and control system able to measure conditions inside a greenhouse such as temperature, soil moisture, luminance and to toggle ventilation, watering and lighting.
 
 <a name="hardware"></a>
 
