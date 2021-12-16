@@ -5,10 +5,10 @@
 
 ### Team members
 
-* David Sedláček ` ID: 221347` (responsible for programming)
-* David Sladkowski `ID: 221043` (responsible for FSM visualisation, Documentation)
-* Marek Sedláček `ID: 221068` (responsible for Scheme visualisation, Documentation)
-* Samuel Turák `ID: 221059` (responsible for programming)
+* David Sedláček ` ID:221347` (responsible for programming)
+* David Sladkowski `ID:221043` (responsible for FSM visualisation, Documentation)
+* Marek Sedláček `ID:221068` (responsible for Scheme visualisation, Documentation)
+* Samuel Turák `ID:221059` (responsible for programming)
 
 Link to this file in your GitHub repository:
 
