@@ -53,6 +53,8 @@ Real time clock DS 1307 for time tracking.
 
 <a name="libs"></a>
 
+Every hardware part is described in the documentation folder. 
+
 ## Libraries description
 
 Write your text here.
