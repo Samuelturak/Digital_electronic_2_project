@@ -229,7 +229,7 @@ ISR(TIMER1_OVF_vect)
 		break;
 		
 	case STATE_GET_TEMP:
-		err = twi_start((0x5c<<1) + TWI_WRITE);
+		err = twi_start((0x5c<<1) + TWI_WRITE);	// send adress frame to slave device
 		if (err == 0) {
 			twi_write(0x2);
 		}
@@ -300,6 +300,7 @@ ISR(TIMER1_OVF_vect)
 		itoa(raw_value, temp_str, 10);
 		adc_moist = raw_value;
 		
+		// uart check for debugging
 		uart_puts("Moisture value: ");
 		uart_puts(temp_str);
 		uart_puts("\r\n");
