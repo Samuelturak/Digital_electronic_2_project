@@ -67,7 +67,7 @@ Write your text here.
 
 ### Finite State Machine:
 
-![your figure](Images/state machine.PNG)
+![your figure](Images/state_machine.png)
 
 <a name="video"></a>
 
