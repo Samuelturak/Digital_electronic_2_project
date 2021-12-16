@@ -1,6 +1,6 @@
 # Digital_electronic_2_project
 
-Scheme:
+##Scheme:
 
 ![your figure](Images/schéma.png)
 
@@ -30,13 +30,17 @@ https://github.com/Samuelturak/Digital_electronic_2_project
 
 ## Project objectives
 
-Write your text here.
+The objective of this project was to create a greenhouse monitoring and control system.
 
 <a name="hardware"></a>
 
 ## Hardware description
 
-Write your text here.
+DHT12 sensor for air temperature measurement.
+Fotoresistor GL5539 for luminance measurement.
+Capacity soil moisture sensor 1.2. to measure soil humidity.
+Relays to turn on ventilator, sprinkler system and lighting.
+Real time clock DS 1307 for time tracking.
 
 <a name="libs"></a>
 
